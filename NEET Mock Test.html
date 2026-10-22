@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEET Mock Test</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--tx:#1f2933;--mu:#667085;--bd:#e3e1da;--ac:#1d6fb8;--acx:#fff;--ok:#1a7f4b;--okb:#e3f4ea;--no:#b42318;--nob:#fde8e6;--sel:#e6f0fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15181c;--card:#1f2429;--tx:#e8eaed;--mu:#9aa3ad;--bd:#333a42;--ac:#5aa9ec;--acx:#0b1620;--ok:#5fd39b;--okb:#17372a;--no:#ff8a80;--nob:#3d1d1a;--sel:#1b3550;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15181c;--card:#1f2429;--tx:#e8eaed;--mu:#9aa3ad;--bd:#333a42;--ac:#5aa9ec;--acx:#0b1620;--ok:#5fd39b;--okb:#17372a;--no:#ff8a80;--nob:#3d1d1a;--sel:#1b3550;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px}
+h1{font-size:1.5rem;margin:0 0 6px}h2{font-size:1.1rem;margin:0 0 10px}
+.mu{color:var(--mu);font-size:.92rem}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:10px 16px}
+button.p{background:var(--ac);color:var(--acx);border-color:var(--ac);font-weight:600}
+button:disabled{opacity:.45;cursor:default}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.timer{font-weight:700;font-variant-numeric:tabular-nums}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card)}
+.opt.sel{background:var(--sel);border-color:var(--ac)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}
+.opt.no{background:var(--nob);border-color:var(--no)}
+.nav{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.pal{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.pal button{padding:8px 0;font-size:.9rem}
+.pal .done{background:var(--sel);border-color:var(--ac)}
+.pal .cur{outline:2px solid var(--ac)}
+.pal .ok{background:var(--okb);border-color:var(--ok)}
+.pal .no{background:var(--nob);border-color:var(--no)}
+.score{font-size:2.2rem;font-weight:800}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px}
+.ex{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:.93rem}
+.tag{font-weight:700}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+// ===== EDIT HERE: questions, marking and time =====
+const TITLE = "NEET Mock Test 1";
+const DURATION_MIN = 100;   // test time in minutes (1 hour 40 minutes)
+const MARKS_RIGHT = 4;     // NEET: +4 for correct
+const MARKS_WRONG = -1;    // NEET: -1 for wrong
+const Q=(q,options,answer,explain)=>({q,options,answer,explain});
+const QUESTIONS = [
+Q("A cell has 20 chromosomes and a DNA content of 2C during G₁ phase. At the end of the S phase, it will contain:",["40 chromosomes and 4C DNA","20 chromosomes and 4C DNA","40 chromosomes and 2C DNA","20 chromosomes and 2C DNA"],1),
+Q("During which stage of meiosis do homologous chromosomes begin pairing to form bivalents?",["Leptotene","Zygotene","Pachytene","Diplotene"],1),
+Q("Crossing over between non-sister chromatids of homologous chromosomes occurs primarily during:",["Leptotene","Zygotene","Pachytene","Diakinesis"],2),
+Q("A diploid organism has 2n = 18. How many chromosomes and chromatids are present in each cell at metaphase II of meiosis?",["18 chromosomes and 18 chromatids","9 chromosomes and 9 chromatids","18 chromosomes and 36 chromatids","9 chromosomes and 18 chromatids"],3),
+Q("Which event distinguishes anaphase I from anaphase II of meiosis?",["Chromosomes move towards opposite poles in both stages","Homologous chromosomes separate in anaphase I, while sister chromatids separate in anaphase II","Sister chromatids separate in anaphase I, while homologous chromosomes separate in anaphase II","DNA replication occurs during anaphase I only"],1),
+Q("A chemical prevents spindle fibre formation in a dividing cell. Which process will be directly affected?",["DNA replication during S phase","Separation and movement of chromosomes during cell division","Protein synthesis during G₁ phase","Duplication of centrioles during interphase only"],1),
+Q("Which statement about the G₀ phase is correct?",["DNA replication occurs continuously","The cell has permanently lost all metabolic activity","The cell has exited the active cell cycle but may remain metabolically active","Every cell in G₀ must immediately undergo apoptosis"],2),
+Q("A cell contains 24 chromosomes at metaphase of mitosis. The number of chromosomes present in each daughter cell after normal mitosis is:",["12","24","48","96"],1),
+Q("In plant cells, cytokinesis usually occurs through the formation of a cell plate. The vesicles contributing to this plate mainly originate from the:",["Lysosomes","Golgi apparatus","Mitochondria","Nucleolus"],1),
+Q("Which event occurs during diplotene of prophase I?",["Homologous chromosomes first begin pairing","DNA replication begins","Synaptonemal complexes disappear and chiasmata become visible","Sister chromatids separate completely"],2),
+Q("If a diploid cell has 16 chromosomes, the number of bivalents formed during a normal meiosis is:",["4","8","16","32"],1),
+Q("Which process is most directly responsible for the independent assortment of maternal and paternal homologous chromosomes?",["DNA replication during S phase","Random orientation of homologous chromosome pairs at metaphase I","Separation of sister chromatids during mitosis","Cytokinesis during telophase II"],1),
+Q("A cell completes meiosis I. Compared with the original diploid cell, each resulting cell generally has:",["Half the chromosome number, with each chromosome still consisting of two sister chromatids","The same chromosome number, with unreplicated chromosomes","Twice the chromosome number, with duplicated chromosomes","Half the DNA content and no chromosomes"],0),
+Q("Which of the following does not normally occur between meiosis I and meiosis II?",["Preparation for the second division","A short interphase-like period in some cells","DNA replication","Continuation of cellular metabolic activity"],2),
+Q("A human somatic cell contains 46 chromosomes during G₂ phase. How many DNA molecules are present in its nucleus, assuming normal replication?",["23","46","92","184"],2),
+Q("The main significance of the G₁/S checkpoint is to help ensure that:",["Sister chromatids separate correctly","The cell is suitable for DNA replication before entering S phase","Cytokinesis has already been completed","Homologous chromosomes have undergone crossing over"],1),
+Q("If crossing over is prevented but chromosome segregation occurs normally during meiosis, which outcome is most directly expected?",["DNA replication will stop completely","Genetic recombination between homologous non-sister chromatids will decrease","Mitosis will become reductional","The chromosome number will automatically double"],1),
+Q("At metaphase of mitosis, a cell has 10 chromosomes. The total number of chromatids present is:",["5","10","20","40"],2),
+Q("Which statement correctly compares mitosis and meiosis?",["Both always produce four daughter cells","Mitosis normally maintains chromosome number, while meiosis reduces it by half","Meiosis occurs only in unicellular organisms","Mitosis always creates genetically different daughter cells"],1),
+Q("In a species with 2n = 14, a cell is observed at anaphase I of meiosis. Assuming normal segregation, how many chromosomes move towards each pole?",["7","14","21","28"],0),
+Q("Which epithelial tissue is best suited for rapid diffusion and filtration?",["Simple squamous epithelium","Stratified squamous epithelium","Transitional epithelium","Compound cuboidal epithelium"],0),
+Q("The cilia lining parts of the respiratory tract mainly help in:",["Absorbing digested fats","Producing red blood cells","Moving mucus and trapped particles towards the pharynx","Storing calcium salts"],2),
+Q("Tendons connect muscles to bones. Their strength is primarily associated with:",["Loose areolar tissue","Adipose tissue","Cartilage","Dense regular connective tissue"],3),
+Q("Which feature is characteristic of cardiac muscle tissue?",["Voluntary control and absence of striations","Branched fibres with intercalated discs","Spindle-shaped cells with a single central nucleus and no striations","Multinucleated fibres under voluntary control"],1),
+Q("A tissue sample shows cells embedded in a firm, flexible matrix, with chondrocytes present in lacunae. The tissue is most likely:",["Blood","Cartilage","Adipose tissue","Dense regular connective tissue"],1),
+Q("Which of the following is correctly matched?",["Tendon — connects bone to bone","Ligament — connects muscle to bone","Tendon — connects muscle to bone","Cartilage — transports respiratory gases"],2),
+Q("The rapid transmission of nerve impulses along a neuron is mainly associated with the:",["Golgi apparatus","Axon","Nucleolus","Lysosome"],1),
+Q("Which feature best distinguishes smooth muscle from skeletal muscle?",["Smooth muscle contains actin and myosin","Smooth muscle can contract","Smooth muscle is generally involuntary and lacks visible striations","Smooth muscle cells always contain many peripheral nuclei"],2),
+Q("Which statement about blood is correct?",["It is an epithelial tissue","Its matrix is called plasma","It contains no connective tissue components","Its red blood cells normally contain a nucleus in adult humans"],1),
+Q("In cockroaches, the main function of Malpighian tubules is:",["Production of digestive enzymes in the mouth","Circulation of haemolymph","Excretion and osmoregulation","Transmission of nerve impulses"],2),
+Q("The circulatory system of a cockroach is described as open because:",["Blood is always confined within arteries and veins","Haemolymph bathes organs directly within body spaces","It has no heart","Oxygen is transported exclusively by red blood cells"],1),
+Q("Which statement about cockroach respiration is correct?",["Oxygen is transported mainly by haemoglobin in red blood cells","Gas exchange occurs through a tracheal system opening through spiracles","Respiration occurs only through the mouth","The heart directly pumps air into the tissues"],1),
+Q("In a cockroach, the gizzard primarily helps in:",["Absorbing water from haemolymph","Producing eggs","Grinding and filtering food","Excreting nitrogenous waste"],2),
+Q("Which sequence correctly represents the path of food through the major regions of the cockroach alimentary canal?",["Crop → mouth → gizzard → midgut → hindgut","Mouth → crop → gizzard → midgut → hindgut","Mouth → midgut → crop → hindgut → gizzard","Mouth → hindgut → midgut → gizzard → crop"],1),
+Q("The haemolymph of a cockroach generally does not transport oxygen because:",["Cockroaches do not require oxygen","The tracheal system delivers oxygen directly to tissues","Their haemolymph contains no water","Their respiratory system is absent"],1),
+Q("Which statement about the cockroach heart is correct?",["It is a ventral, two-chambered heart","It is a dorsal, elongated, chambered structure","It is located inside the brain","It pumps blood through a closed network of capillaries"],1),
+Q("In cockroaches, nitrogenous waste is mainly excreted in the form of:",["Ammonia only","Uric acid","Urea only","Carbon monoxide"],1),
+Q("Which tissue is best adapted for storing energy in the form of fat?",["Adipose connective tissue","Nervous tissue","Ciliated epithelium","Cardiac muscle"],0),
+Q("A person suffers damage to the myelin sheath surrounding certain axons. Which effect is most likely?",["Faster transmission in all affected neurons","Reduced efficiency or speed of impulse conduction","Conversion of neurons into epithelial cells","Complete loss of all synapses in the body"],1),
+Q("Which statement about skeletal muscle fibres is correct?",["They are typically spindle-shaped and non-striated","They are branched and joined by intercalated discs","They are usually long, cylindrical, striated and multinucleate","They are composed of chondrocytes in lacunae"],2),
+Q("The energy of a photon having a wavelength of 400 nm is approximately: (h = 6.626 × 10⁻³⁴ J s, c = 3.0 × 10⁸ m/s)",["4.97 × 10⁻¹⁹ J","3.31 × 10⁻¹⁹ J","1.99 × 10⁻²⁵ J","7.95 × 10⁻²⁰ J"],0),
+Q("Which set of quantum numbers is not allowed?",["n = 3, l = 2, mₗ = 0, mₛ = +½","n = 2, l = 1, mₗ = −1, mₛ = −½","n = 3, l = 3, mₗ = 0, mₛ = +½","n = 4, l = 0, mₗ = 0, mₛ = −½"],2),
+Q("The maximum number of electrons that can be accommodated in a shell with principal quantum number n = 4 is:",["8","16","32","50"],2),
+Q("Which orbital has the greatest penetration towards the nucleus among the following orbitals of the same principal shell?",["3d","3p","3s","All have identical penetration"],2),
+Q("The de Broglie wavelength of a particle is inversely proportional to its:",["Charge only","Kinetic energy only, for all possible energies","Momentum","Potential energy only"],2),
+Q("If the momentum of a particle is doubled, its de Broglie wavelength becomes:",["Twice the original value","Half the original value","Four times the original value","Unchanged"],1),
+Q("Which electronic configuration represents the ground state of chromium (Z = 24)?",["[Ar] 3d⁴ 4s²","[Ar] 3d⁵ 4s¹","[Ar] 3d⁶","[Ar] 3d³ 4s³"],1),
+Q("How many orbitals are present in a subshell for which l = 2?",["2","3","5","10"],2),
+Q("The maximum number of electrons that can have the quantum numbers n = 3 and l = 1 is:",["2","6","10","14"],1),
+Q("Which transition in a hydrogen atom emits a photon with the greatest energy?",["n = 4 → n = 3","n = 3 → n = 2","n = 2 → n = 1","n = 5 → n = 4"],2),
+Q("The radius of the second Bohr orbit of hydrogen is how many times the radius of the first orbit?",["2","4","8","16"],1),
+Q("The energy of an electron in the third orbit of a hydrogen atom is approximately:",["−13.6 eV","−6.8 eV","−3.4 eV","−1.51 eV"],3),
+Q("Which of the following has the largest number of unpaired electrons in its ground state?",["N (Z = 7)","O (Z = 8)","F (Z = 9)","Ne (Z = 10)"],0),
+Q("An electron is excited from n = 1 to n = 3 in a hydrogen atom. The energy absorbed is approximately:",["1.51 eV","10.2 eV","12.09 eV","13.6 eV"],2),
+Q("According to Heisenberg’s uncertainty principle, if the uncertainty in the position of a particle decreases, the uncertainty in its momentum:",["Must also decrease","Becomes zero","Must remain constant","Has a lower bound that increases"],3),
+Q("Which statement about the four quantum numbers is correct?",["l determines the orientation of an orbital","mₗ determines the orientation of an orbital","mₛ determines the principal energy level","n determines the spin of an electron"],1),
+Q("The wavelength of radiation emitted when an electron in hydrogen falls from n = 3 to n = 2 is approximately: (Rₕ = 1.097 × 10⁷ m⁻¹)",["121.6 nm","486 nm","656 nm","1026 nm"],2),
+Q("How many electrons in a ground-state phosphorus atom (Z = 15) occupy orbitals with n = 3?",["3","5","8","15"],1,"Phosphorus is 1s² 2s² 2p⁶ 3s² 3p³, so the n = 3 shell holds 2 + 3 = 5 electrons."),
+Q("Which pair of orbitals can have the same energy in a hydrogen atom according to the ideal Bohr model?",["2s and 2p","2s and 3s","1s and 2s","3p and 4p"],0),
+Q("An electron has a kinetic energy of 150 eV. If its de Broglie wavelength is approximately 1.0 Å, what happens to the wavelength when its kinetic energy is increased to 600 eV, assuming non-relativistic motion?",["It becomes 2.0 Å","It becomes 0.5 Å","It becomes 0.25 Å","It remains 1.0 Å"],1),
+Q("A car travels 60 km at 30 km/h and then another 60 km at 60 km/h. Its average speed for the entire journey is:",["40 km/h","45 km/h","50 km/h","30 km/h"],0),
+Q("The position of a particle is given by x = 4t² − 2t + 3, where x is in metres and t in seconds. Its velocity at t = 2 s is:",["6 m/s","10 m/s","14 m/s","18 m/s"],2),
+Q("A body starts from rest and moves with uniform acceleration 3 m/s² for 4 s. The distance covered is:",["12 m","24 m","36 m","48 m"],1),
+Q("A ball is thrown vertically upwards with an initial speed of 20 m/s. Taking g = 10 m/s², the maximum height reached is:",["10 m","15 m","20 m","40 m"],2),
+Q("A particle moves with a velocity of +8 m/s for 5 s and then with a velocity of −4 m/s for the next 5 s. Its average velocity over 10 s is:",["+6 m/s","+4 m/s","+2 m/s","−2 m/s"],2),
+Q("The velocity of a particle increases uniformly from 5 m/s to 25 m/s in 4 s. The distance covered in this interval is:",["40 m","50 m","60 m","80 m"],2),
+Q("A car moving at 20 m/s comes to rest uniformly in 5 s. The magnitude of its acceleration is:",["2 m/s²","4 m/s²","5 m/s²","10 m/s²"],1),
+Q("A particle covers equal distances at speeds v and 2v. Its average speed for the complete journey is:",["3v/2","4v/3","5v/3","2v"],1),
+Q("Two cars move along the same straight road in the same direction at 25 m/s and 15 m/s. If the faster car is 100 m behind the slower car, the time taken to catch up is:",["5 s","10 s","15 s","25 s"],1),
+Q("A particle starts from rest and accelerates uniformly at 2 m/s². The ratio of the distance covered during the third second to that covered during the first second is:",["3:1","5:1","2:1","4:1"],1),
+Q("The position of a particle is x = 2t³ − 3t² + 4. Its acceleration at t = 2 s is:",["6 m/s²","12 m/s²","18 m/s²","24 m/s²"],2),
+Q("A stone is dropped from rest from a height of 45 m. Taking g = 10 m/s² and neglecting air resistance, its speed just before reaching the ground is:",["15 m/s","20 m/s","30 m/s","45 m/s"],2),
+Q("A train moving at 10 m/s accelerates uniformly at 2 m/s² for 5 s. Its displacement during this time is:",["50 m","60 m","75 m","100 m"],2),
+Q("A body is projected horizontally from a cliff 80 m high with a speed of 15 m/s. Taking g = 10 m/s², how far horizontally does it travel before hitting the ground?",["30 m","45 m","60 m","120 m"],2),
+Q("Two particles start from the same point at the same instant. Particle A moves at a constant speed of 6 m/s. Particle B starts from rest and accelerates uniformly at 2 m/s² in the same direction. After how much time will B catch A again, excluding the starting instant?",["3 s","6 s","9 s","12 s"],1),
+Q("A velocity–time graph is a straight line rising from 0 m/s at t = 0 to 12 m/s at t = 6 s. The displacement during these 6 s is:",["18 m","24 m","36 m","72 m"],2),
+Q("A ball is thrown vertically upwards at 30 m/s. Taking g = 10 m/s², the time taken to return to the point of projection is:",["3 s","4 s","6 s","9 s"],2),
+Q("A particle moves 3 m east and then 4 m north. The magnitude of its displacement is:",["1 m","5 m","7 m","12 m"],1),
+Q("A body moving at 12 m/s is uniformly retarded at 3 m/s². The distance it travels before coming to rest is:",["12 m","18 m","24 m","36 m"],2),
+Q("A particle moves along a straight line with initial velocity u = 4 m/s and constant acceleration a = 2 m/s². The ratio of its displacement during the fifth second to its displacement during the second second is:",["13:7","3:1","4:1","5:1"],0,"Displacement in the nth second = u + a(2n − 1)/2. Fifth second: 4 + 9 = 13 m. Second second: 4 + 3 = 7 m. Ratio = 13:7.")
+];
+// ==================================================
+
+const app = document.getElementById("app");
+let cur = 0, ans = [], left = DURATION_MIN * 60, tick = null, submitted = false;
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(s){const m=Math.floor(s/60),r=s%60;return String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+const L = ["A","B","C","D","E","F"];
+
+function start(){
+  ans = QUESTIONS.map(()=>null); cur = 0; left = DURATION_MIN*60; submitted = false;
+  clearInterval(tick);
+  tick = setInterval(()=>{
+    left--;
+    const t = document.getElementById("t"); if(t) t.textContent = fmt(Math.max(left,0));
+    if(left<=0) submit(true);
+  },1000);
+  renderTest();
+}
+
+function home(){
+  app.innerHTML = `<div class="card"><h1>${esc(TITLE)}</h1>
+  <p class="mu">${QUESTIONS.length} questions · ${DURATION_MIN} minutes · +${MARKS_RIGHT} for each correct answer, ${MARKS_WRONG} for each wrong answer, 0 if left blank.</p>
+  <p>Pick one option for each question. You can move between questions and change answers until you submit. The correct answers are shown after you submit.</p>
+  <button class="p" id="go">Start test</button></div>`;
+  document.getElementById("go").onclick = start;
+}
+
+function renderTest(){
+  const q = QUESTIONS[cur];
+  const pal = QUESTIONS.map((_,i)=>`<button data-i="${i}" class="${ans[i]!==null?"done":""} ${i===cur?"cur":""}">${i+1}</button>`).join("");
+  app.innerHTML = `
+  <div class="top"><span class="mu">Question ${cur+1} of ${QUESTIONS.length}</span><span class="timer" id="t">${fmt(Math.max(left,0))}</span></div>
+  <div class="card"><h2>${esc(q.q)}</h2>
+  ${q.options.map((o,i)=>`<button class="opt ${ans[cur]===i?"sel":""}" data-o="${i}"><b>${L[i]}.</b> ${esc(o)}</button>`).join("")}
+  <div class="nav"><button id="prev" ${cur===0?"disabled":""}>Previous</button><button id="clr">Clear</button><button id="next" ${cur===QUESTIONS.length-1?"disabled":""}>Next</button></div></div>
+  <div class="card"><div class="pal">${pal}</div></div>
+  <button class="p" id="sub" style="width:100%">Submit test</button>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ans[cur]=+b.dataset.o;renderTest();});
+  app.querySelectorAll(".pal button").forEach(b=>b.onclick=()=>{cur=+b.dataset.i;renderTest();});
+  document.getElementById("prev").onclick=()=>{cur--;renderTest();};
+  document.getElementById("next").onclick=()=>{cur++;renderTest();};
+  document.getElementById("clr").onclick=()=>{ans[cur]=null;renderTest();};
+  document.getElementById("sub").onclick=()=>{
+    const un = ans.filter(a=>a===null).length;
+    const box=document.createElement("div"); box.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50"; box.innerHTML=`<div class="card" style="max-width:380px;margin:0"><h2>Submit test?</h2><p class="mu">${un?`You have ${un} unanswered question(s).`:"You have answered all questions."} You can’t change answers after submitting.</p><div class="nav"><button id="cn">Go back</button><button class="p" id="cy">Yes, submit</button></div></div>`; document.body.appendChild(box); document.getElementById("cn").onclick=()=>box.remove(); document.getElementById("cy").onclick=()=>{box.remove(); submit(false);};
+  };
+}
+
+function submit(auto){
+  if(submitted) return; submitted = true; clearInterval(tick);
+  let right=0,wrong=0,blank=0;
+  QUESTIONS.forEach((q,i)=>{ if(ans[i]===null) blank++; else if(ans[i]===q.answer) right++; else wrong++; });
+  const score = right*MARKS_RIGHT + wrong*MARKS_WRONG, max = QUESTIONS.length*MARKS_RIGHT, pct = Math.max(0, Math.round(score/max*1000)/10);
+  const review = QUESTIONS.map((q,i)=>{
+    const st = ans[i]===null ? "Not answered" : ans[i]===q.answer ? "Correct" : "Wrong";
+    return `<div class="card"><div class="mu">Question ${i+1} · <span class="tag" style="color:${st==="Correct"?"var(--ok)":st==="Wrong"?"var(--no)":"var(--mu)"}">${st}</span></div>
+    <h2>${esc(q.q)}</h2>
+    ${q.options.map((o,j)=>`<div class="opt ${j===q.answer?"ok":(j===ans[i]?"no":"")}"><b>${L[j]}.</b> ${esc(o)}${j===q.answer?" ✔":""}${j===ans[i]&&j!==q.answer?" (your answer)":""}</div>`).join("")}
+    ${ans[i]!==q.answer?`<div class="ex"><b>Correct answer:</b> ${L[q.answer]}. ${esc(q.options[q.answer])}</div>`:""}${q.explain?`<div class="ex"><b>Explanation:</b> ${esc(q.explain)}</div>`:""}</div>`;
+  }).join("");
+  app.innerHTML = `<div class="card"><h1>Test submitted${auto?" (time up)":""}</h1>
+  <div class="score">${pct}%</div><div class="mu">Marks: ${score} out of ${max}</div>
+  <div class="stats"><span>✔ Correct: <b>${right}</b></span><span>✘ Wrong: <b>${wrong}</b></span><span>– Skipped: <b>${blank}</b></span></div>
+  <p class="mu">Scroll down to see the correct answers.</p><button class="p" id="again">Retake test</button></div>${review}`;
+  document.getElementById("again").onclick = start;
+  window.scrollTo(0,0);
+}
+
+home();
+</script>
+</body>
+</html>
